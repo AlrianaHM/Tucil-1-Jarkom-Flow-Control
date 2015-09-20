@@ -3,7 +3,16 @@ File : T1_rx.cpp
 Author : LCIA
 */
 
-#include "dcomn.h"
+#include "dcomm.h"
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/uio.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /* Delay to adjust speed of consuming uffer, in milliseconds */
 #define DELAY 500
@@ -13,7 +22,7 @@ Author : LCIA
 
 Byte rxbuf[RXQSIZE];
 QTYPE rcvq = {0, 0, 0, RXQSIZE, rxbuf};
-QTYPE *rxq = &rcvg;
+QTYPE *rxq = &rcvq;
 Byte sent_xonxoff = XON;
 bool send_xon = false, send_xoff = false;
 
@@ -24,28 +33,51 @@ int sockfd; // listen on sock_fd
 static Byte *rcvchar(int sockfd, QTYPE *queue);
 static Byte *q_get(QTYPE *, Byte *);
 
+
 int main(int argc, char *argv[]) {
 
+	//Constructing local socket address
+	const char* hostname = 0;
+	const char* portname = "daytime";
+	struct addrinfo hints;
+	memset(&hints,0,sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype=SOCK_DGRAM;
+	hints.ai_protocol=0;
+	hints.ai_flags=AI_PASSIVE|AI_ADDRCONFIG;
+	struct addrinfo* res =0;
+	int err = getaddrinfo(hostname,portname,&hints,&res);
+	if (err!=0){
+		printf("failed to resolve local socket address(err=%d)\n",err );
+		return 0;
+	}
+
 	Byte C;
+	
 	// Insert code here to bind socket to the port number given in argv[1].
+	sockfd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
+	if(sockfd==-1){
+		printf("%s\n",strerror(errno));
+	}
 
 	/* Initialize XON/XOFF flags */
 	/* Create child process */
 
 	/*** If Parrent Process ***/
-	while (true){
-		c = *(rcvchar(sockfd, rxq));
+//	while (true){
+//		C = *(rcvchar(sockfd, rxq));
 		
 		/* Quit on end of file */
-		if (c == Endfile) {
+/*		if (C == Endfile) {
 			exit(0);
 		}
 	}
 	/*** else If Child Process ***/
-	while (true) { 
+//	while (true) { 
 	/* Call q_get */ 
 	/* Can introduce some delay here. */
-	}
+//	}
+	
 }
 
 static Byte *rcvchar(int sockfd, QTYPE *queue){
