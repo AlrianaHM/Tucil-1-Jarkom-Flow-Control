@@ -102,9 +102,10 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+Byte dumbuf[2];
 static Byte *rcvchar(int sockfd, QTYPE *queue){
 	if (!send_xoff){
-		int n =recvfrom(sockfd,rxbuf,RXQSIZE,0,(struct  sockaddr *) &dmy,&dmylen);
+		ssize_t n =recvfrom(sockfd, dumbuf,sizeof(dumbuf) ,0,(struct  sockaddr *) &dmy,&dmylen);
 		if(n < 0){
 			printf("ERROR in recvfrom() \n");
 		}
