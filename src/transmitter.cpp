@@ -16,6 +16,7 @@ Author 	: Ignatius Alriana Haryadi Moel
 #include <stdlib.h>
 #include <stdio.h>
 #include <fstream>
+#include <iostream>
 
 /* Delay to adjust speed of consuming uffer, in milliseconds */
 #define DELAY 500
@@ -34,7 +35,7 @@ int sockfd; // listen on sock_fd
 
 struct sockaddr_storage dmy;
 socklen_t dmylen = sizeof (dmy);
-
+using namespace std;
 int main(int argc, char *argv[]) {
 
 	// Mengecek argumen
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
 	pid_t pid;
 	pid = fork();
 	if (sent_xonxoff == XON)
-		send_xon = ture;
+		send_xon = true;
 	else send_xoff = false;
 
 	/*** If Parrent Process ***/
@@ -121,13 +122,13 @@ int main(int argc, char *argv[]) {
 			} else if (dumchar == XOFF){
 				cout << "XOFF diterima\n";
 				send_xoff = true;
-				send_xoon = false;
+				send_xon = false;
 			}
 
 		}
 	}
 
-	freeaddrInfo(res);
+	freeaddrinfo(res);
 
 	close(sockfd);
 

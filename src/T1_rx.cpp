@@ -64,16 +64,16 @@ int main(int argc, char *argv[]) {
 	sockfd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
 	if(sockfd==-1){
 		printf("%s\n",strerror(errno));
-		return 0l
+		return 0;
 	}	
 
 	// Insert code here to bind socket to the port number given in argv[1].
-	if(bind(sockfd,res->ai_addr,res->ai_addrlen)==-1)){
+	if(bind(sockfd,res->ai_addr,res->ai_addrlen)==-1){
 		printf("%s\n",strerror(errno) );
 		return 0;
 	}
 
-	freeaddrInfo(res);
+	freeaddrinfo(res);
 
 	/* Initialize XON/XOFF flags */
 	send_xon = true;
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 		/* Call q_get */ 
 			Byte * consumer = q_get(rxq,&C);
 			if (consumer != NULL){
-				printf("Mengkonsumsi byte ke-%d: %c\n",++count_consumed,&consumer );
+				printf("Mengkonsumsi byte ke-%d: %u\n",++count_consumed,(unsigned int)consumer );
 			}
 		/* Can introduce some delay here. */
 			sleep(1);
@@ -137,16 +137,16 @@ static Byte *rcvchar(int sockfd, QTYPE *queue){
 				queue->rear=0;
 			}
 		}
-		if(dumbuf[0]!=Endfile && dumbuf[0]!=EF && dumbuf[0] != CR){
+		if(dumbuf[0]!=Endfile && dumbuf[0]!=LF && dumbuf[0] != CR){
 			printf("Menerima byte ke-%d.\n",++count_buffer);
 		}
 
-		if(queue->count>MIN_UPPERLIMIT && sent_xonxoff=XON){
+		if(queue->count>MIN_UPPERLIMIT && sent_xonxoff==XON){
 			sent_xonxoff=XOFF;
 			send_xon=false;
 			send_xoff=true;
 			printf("Buffer > minimum upperlimit. Mengirim XOFF\n");
-			Byte dumbuf2[2]
+			Byte dumbuf2[2];
 			dumbuf2[0] = XOFF;
 			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct  sockaddr *) &dmy,sizeof(dmy));
 			if(nSent<0){
@@ -185,15 +185,15 @@ static Byte *q_get(QTYPE *queue, Byte *data) {
 			else queue->front = 0;
 			}
 		
-		}while((*data<32)&&(*data!=CR)&&(*data!=LF)&&(queue->count > 0))
-		if (queue->count<MAX_LOWERLIMIT && sent_xonxoff = XOFF){
+		}while((*data<32)&&(*data!=CR)&&(*data!=LF)&&(queue->count > 0));
+		if (queue->count<MAX_LOWERLIMIT && sent_xonxoff == XOFF){
 			sent_xonxoff=XON;
 			send_xon=true;
 			send_xoff=false;
-			printf("Buffer < maksimum lowerlimit. Mengirim XON\n", );
+			printf("Buffer < maksimum lowerlimit. Mengirim XON\n");
 			Byte dumbuf2[2];
 			dumbuf2[0]=XON;
-			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct sockaddr *) dmy,sizeof(dmy));
+			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct sockaddr *) &dmy,sizeof(dmy));
 			if (nSent < 0){
 				printf("ERROR in sendto()\n");
 			}
