@@ -28,6 +28,9 @@ Author : LCIA
 #define BYTESIZE 256 /* The maximum value of a byte */
 #define MAXLEN 1024 /* Maximum messages length */
 
+// Define max min buffer
+#define MIN_UPPERLIMIT 4
+#define MAX_LOWERLIMIT 1
 typedef unsigned char Byte;
 typedef struct QTYPE{
 	/* data */

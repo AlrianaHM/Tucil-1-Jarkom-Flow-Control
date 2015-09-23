@@ -53,12 +53,21 @@ int main(int argc, char *argv[]) {
 	}
 
 	Byte C;
-	
-	// Insert code here to bind socket to the port number given in argv[1].
+
+	//Creating Socket
 	sockfd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
 	if(sockfd==-1){
 		printf("%s\n",strerror(errno));
+		return 0l
+	}	
+
+	// Insert code here to bind socket to the port number given in argv[1].
+	if(bind(fd,res->ai_addr,res->ai_addrlen)==-1)){
+		printf("%s\n",strerror(errno) );
+		return 0;
 	}
+
+	freeaddrInfo(res);
 
 	/* Initialize XON/XOFF flags */
 	/* Create child process */
