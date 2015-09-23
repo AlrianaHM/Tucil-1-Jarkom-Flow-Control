@@ -38,17 +38,20 @@ static Byte *q_get(QTYPE *, Byte *);
 
 int main(int argc, char *argv[]) {
 
+	if (argc!=2){
+		printf("Argumen Salah\n");
+		return 0;
+	}
+	char *port_number = argv[1];
 	//Constructing local socket address
-	const char* hostname = 0;
-	const char* portname = "daytime";
 	struct addrinfo hints;
 	memset(&hints,0,sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype=SOCK_DGRAM;
-	hints.ai_protocol=0;
+	hints.ai_protocol=IPPROTO_UDP;
 	hints.ai_flags=AI_PASSIVE|AI_ADDRCONFIG;
 	struct addrinfo* res =0;
-	int err = getaddrinfo(hostname,portname,&hints,&res);
+	int err = getaddrinfo(NULL,port_number,&hints,&res);
 	if (err!=0){
 		printf("failed to resolve local socket address(err=%d)\n",err );
 		return 0;
@@ -64,7 +67,7 @@ int main(int argc, char *argv[]) {
 	}	
 
 	// Insert code here to bind socket to the port number given in argv[1].
-	if(bind(fd,res->ai_addr,res->ai_addrlen)==-1)){
+	if(bind(sockfd,res->ai_addr,res->ai_addrlen)==-1)){
 		printf("%s\n",strerror(errno) );
 		return 0;
 	}
@@ -102,6 +105,8 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+int count_buffer=0; //pengkitung banyak elemen di dala m buffer
+
 Byte dumbuf[2];
 static Byte *rcvchar(int sockfd, QTYPE *queue){
 	if (!send_xoff){
@@ -110,7 +115,21 @@ static Byte *rcvchar(int sockfd, QTYPE *queue){
 			printf("ERROR in recvfrom() \n");
 		}
 		else {
-			queue->data[queue->rear] =  
+			queue->data[queue->rear] =  dumbuf[0];
+			queue->count++;
+			if (queue->rear < RXQSIZE -1 ){
+				queue->rear++;
+			}else{
+				queue->rear=0;
+			}
+			count_buffer++;
+			if(count_buffer>MIN_UPPERLIMIT && sent_xonxoff=XON){
+				sent_xonxoff=XOFF;
+				send_xon=false;
+				send_xoff=true;
+				printf("Buffer > minimum upperlimit. Mengirim XOFF\n");
+
+			}
 		}
 	}
 	else{

@@ -22,7 +22,7 @@ Author : LCIA
 
 /* XON/XOFF protocol */
 #define XON (0x11)
-#define XOFF (0x13)
+#define XON (0x13)
 
 /* Const */
 #define BYTESIZE 256 /* The maximum value of a byte */
