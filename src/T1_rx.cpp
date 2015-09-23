@@ -109,9 +109,16 @@ int count_buffer=0; //pengkitung banyak elemen di dala m buffer
 
 Byte dumbuf[2];
 static Byte *rcvchar(int sockfd, QTYPE *queue){
+	/*
+	Insert code here
+	Read a character from socket and put it to receive buffer.
+	If the number of characters in the receive buffer is above
+	certain level, then send XOFF and set a flag.
+	Return a poiinter to the buffer wher data is put.
+	*/
 	if (!send_xoff){
-		ssize_t n =recvfrom(sockfd, dumbuf,sizeof(dumbuf) ,0,(struct  sockaddr *) &dmy,&dmylen);
-		if(n < 0){
+		ssize_t nReceived =recvfrom(sockfd, dumbuf,sizeof(dumbuf) ,0,(struct  sockaddr *) &dmy,&dmylen);
+		if(nReceived < 0){
 			printf("ERROR in recvfrom() \n");
 		}
 		else {
@@ -123,26 +130,30 @@ static Byte *rcvchar(int sockfd, QTYPE *queue){
 				queue->rear=0;
 			}
 			count_buffer++;
-			if(count_buffer>MIN_UPPERLIMIT && sent_xonxoff=XON){
-				sent_xonxoff=XOFF;
-				send_xon=false;
-				send_xoff=true;
-				printf("Buffer > minimum upperlimit. Mengirim XOFF\n");
+		}
+		if(dumbuf[0]!=Endfile && dumbuf[0]!=EF && dumbuf[0] != CR){
+			printf("Menerima byte ke-%d.\n",count_buffer);
+		}
 
+		if(count_buffer>MIN_UPPERLIMIT && sent_xonxoff=XON){
+			sent_xonxoff=XOFF;
+			send_xon=false;
+			send_xoff=true;
+			printf("Buffer > minimum upperlimit. Mengirim XOFF\n");
+			Byte dumbuf2[2]
+			dumbuf2[0] = XOFF;
+			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct  sockaddr *) &dmy,dmylen);
+			if(nSent<0){
+				printf("ERROR in sendto()\n");
 			}
 		}
+		return &dumbuf[0];
+
 	}
 	else{
 		Byte *dummy = 0;
 		return dummy;
 	}
-	/*
-	Insert code here
-	Read a character from socket and put it to receive buffer.
-	If the number of characters in the receive buffer is above
-	certain level, then send XOFF and set a flag.
-	Return a poiinter to the buffer wher data is put.
-	*/
 
 }
 
