@@ -29,6 +29,8 @@ bool send_xon = false, send_xoff = false;
 /* Socket */
 int sockfd; // listen on sock_fd
 
+struct sockaddr_storage dmy;
+socklen_t dmylen = sizeof (dmy);
 /* Function Declaration */
 static Byte *rcvchar(int sockfd, QTYPE *queue);
 static Byte *q_get(QTYPE *, Byte *);
@@ -71,26 +73,50 @@ int main(int argc, char *argv[]) {
 
 	/* Initialize XON/XOFF flags */
 	/* Create child process */
+	pid_t pid;
+	pid = fork();
+
 
 	/*** If Parrent Process ***/
-//	while (true){
-//		C = *(rcvchar(sockfd, rxq));
-		
-		/* Quit on end of file */
-/*		if (C == Endfile) {
-			exit(0);
+	if (pid !=0){
+		while (true){
+			C = *(rcvchar(sockfd, rxq));
+			
+			/* Quit on end of file */
+			if (C == Endfile) {
+				exit(0);
+			}
 		}
 	}
-	/*** else If Child Process ***/
-//	while (true) { 
-	/* Call q_get */ 
-	/* Can introduce some delay here. */
-//	}
 	
+	/*** else If Child Process ***/
+	else{
+		while (true) { 
+		/* Call q_get */ 
+		/* Can introduce some delay here. */
+		}
+	}
+	
+	close(sockfd);
+
+	return 0;
 }
 
+Byte dumbuf[2];
 static Byte *rcvchar(int sockfd, QTYPE *queue){
-
+	if (!send_xoff){
+		ssize_t n =recvfrom(sockfd, dumbuf,sizeof(dumbuf) ,0,(struct  sockaddr *) &dmy,&dmylen);
+		if(n < 0){
+			printf("ERROR in recvfrom() \n");
+		}
+		else {
+			queue->data[queue->rear] =  
+		}
+	}
+	else{
+		Byte *dummy = 0;
+		return dummy;
+	}
 	/*
 	Insert code here
 	Read a character from socket and put it to receive buffer.
@@ -98,6 +124,7 @@ static Byte *rcvchar(int sockfd, QTYPE *queue){
 	certain level, then send XOFF and set a flag.
 	Return a poiinter to the buffer wher data is put.
 	*/
+
 }
 
 /* q_get retuns a pointer to the buffer where data is read
