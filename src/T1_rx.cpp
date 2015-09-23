@@ -35,6 +35,7 @@ socklen_t dmylen = sizeof (dmy);
 static Byte *rcvchar(int sockfd, QTYPE *queue);
 static Byte *q_get(QTYPE *, Byte *);
 
+int count_consumed = 0; //menghitung karakter yang akan diambil dari buffer
 
 int main(int argc, char *argv[]) {
 
@@ -75,6 +76,7 @@ int main(int argc, char *argv[]) {
 	freeaddrInfo(res);
 
 	/* Initialize XON/XOFF flags */
+	send_xon = true;
 	/* Create child process */
 	pid_t pid;
 	pid = fork();
@@ -96,7 +98,12 @@ int main(int argc, char *argv[]) {
 	else{
 		while (true) { 
 		/* Call q_get */ 
+			Byte * consumer = q_get(rxq,&C);
+			if (consumer != NULL){
+				printf("Mengkonsumsi byte ke-%d: %c\n",++count_consumed,&consumer );
+			}
 		/* Can introduce some delay here. */
+			sleep(1);
 		}
 	}
 	
@@ -105,7 +112,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-int count_buffer=0; //pengkitung banyak elemen di dala m buffer
+int count_buffer=0; //pengkitung banyak elemen di dalam buffer
 
 Byte dumbuf[2];
 static Byte *rcvchar(int sockfd, QTYPE *queue){
@@ -129,20 +136,19 @@ static Byte *rcvchar(int sockfd, QTYPE *queue){
 			}else{
 				queue->rear=0;
 			}
-			count_buffer++;
 		}
 		if(dumbuf[0]!=Endfile && dumbuf[0]!=EF && dumbuf[0] != CR){
-			printf("Menerima byte ke-%d.\n",count_buffer);
+			printf("Menerima byte ke-%d.\n",++count_buffer);
 		}
 
-		if(count_buffer>MIN_UPPERLIMIT && sent_xonxoff=XON){
+		if(queue->count>MIN_UPPERLIMIT && sent_xonxoff=XON){
 			sent_xonxoff=XOFF;
 			send_xon=false;
 			send_xoff=true;
 			printf("Buffer > minimum upperlimit. Mengirim XOFF\n");
 			Byte dumbuf2[2]
 			dumbuf2[0] = XOFF;
-			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct  sockaddr *) &dmy,dmylen);
+			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct  sockaddr *) &dmy,sizeof(dmy));
 			if(nSent<0){
 				printf("ERROR in sendto()\n");
 			}
@@ -159,18 +165,41 @@ static Byte *rcvchar(int sockfd, QTYPE *queue){
 
 /* q_get retuns a pointer to the buffer where data is read
  * or NULL if buffer is empty. */
-
 static Byte *q_get(QTYPE *queue, Byte *data) {
 	Byte *current;
 
 	/* Nothing in the queue*/
 	if(!queue -> count) return (NULL);
+	else {
+			/* Insert code here.
+			Retrieve data from buffer, save it to "current" and "data"
+			If the number of characters in the receive buffer is below
+			certain level, then send XON.
+			Increment front index and check for wraparound.
+			*/
+		do{
+			if (queue->count>0){
+			(*data) = queue->data[queue->front];
+			queue->count--;
+			if(queue->count<7)queue->front++;
+			else queue->front = 0;
+			}
+		
+		}while((*data<32)&&(*data!=CR)&&(*data!=LF)&&(queue->count > 0))
+		if (queue->count<MAX_LOWERLIMIT && sent_xonxoff = XOFF){
+			sent_xonxoff=XON;
+			send_xon=true;
+			send_xoff=false;
+			printf("Buffer < maksimum lowerlimit. Mengirim XON\n", );
+			Byte dumbuf2[2];
+			dumbuf2[0]=XON;
+			ssize_t nSent = sendto(sockfd,dumbuf2,sizeof(dumbuf2),4,(struct sockaddr *) dmy,sizeof(dmy));
+			if (nSent < 0){
+				printf("ERROR in sendto()\n");
+			}
+		}
+		return data;
+	}
 
-	/* Insert code here.
-	Retrieve data from buffer, save it to "current" and "data"
-	If the number of characters in the receive buffer is below
-	certain level, then send XON.
-	Increment front index and check for wraparound.
-	*/
 
 }
