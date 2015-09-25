@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 			char *ch;
 			int i = 0;
 			fstream fin(filename, fstream::in);
-			while (fin >> noskipws >> ch) {
+			while (fin >> noskipws >> &ch) {
 				if (sent_xonxoff == XON){
 	    				size_t len = strlen(ch);
 	    				// Sending karakter/karakter
