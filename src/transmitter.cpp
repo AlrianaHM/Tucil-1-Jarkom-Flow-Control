@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 			// Menbaca File yang akan dikirim
 			char *ch;
 			int i = 0;
-			fstream fin(argv[e], fstream::in);
+			fstream fin(argv[3], fstream::in);
 			while (fin >> noskipws >> ch) {
 				if (sent_xonxoff == XON){
 	    				size_t len = strlen(ch);
