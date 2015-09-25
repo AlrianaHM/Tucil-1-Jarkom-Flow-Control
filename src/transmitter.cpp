@@ -108,18 +108,17 @@ int main(int argc, char *argv[]) {
 	/*** else If Child Process ***/
 	else{
 		while (true) {
-			int length = 3;
-			char dumchar[length+1];
+			Byte dumchar[2];
 			struct sockaddr_storage recAdrr;			// receiver adress
 			socklen_t recAdrrlen = sizeof(recAdrr);		
 		
-			numBytes = recvfrom(sockfd, dumchar, length, 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
+			numBytes = recvfrom(sockfd, dumchar, size0f(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
 			if (numBytes < 0) cout << "receive failed \n";
-			else if (dumchar == XON){
+			else if (dumchar[0] == XON){
 				cout << "XON diterima\n";
 				send_xoff = false;
 				send_xon = true;
-			} else if (dumchar == XOFF){
+			} else if (dumchar[0] == XOFF){
 				cout << "XOFF diterima\n";
 				send_xoff = true;
 				send_xon = false;
