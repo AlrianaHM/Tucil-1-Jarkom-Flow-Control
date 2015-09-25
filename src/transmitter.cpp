@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 		printf("failed to resolve local socket address(err=%d)\n",err );
 		return 0;
 	}
-
+	cout << "Membuat socket untuk koneksi ke" << ip_adr <<":"<< port_num <<"...\n";
 	//Creating Socket
 	sockfd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
 	if(sockfd<0){
@@ -88,12 +88,12 @@ int main(int argc, char *argv[]) {
 			// Menbaca File yang akan dikirim
 			char ch;
 			int i = 0;
-			fstream fin("tes.txt", fstream::in);
+			fstream fin(filename, fstream::in);
 			while (fin >> noskipws >> ch) {
 				if (sent_xonxoff == XON){
 	    			
 	    			// Sending karakter/karakter
-	    			ssize_t numBytes = sendto(sockfd, ch, 1, 0,res->ai_addr, res->ai_addrlen);
+	    			ssize_t numBytes = sendto(sockfd, &ch, 1, 0,res->ai_addr, res->ai_addrlen);
 	    			if (numBytes < 0) cout << "sending failed\n" ;
 	    			else {
 	    				i++;
@@ -108,12 +108,15 @@ int main(int argc, char *argv[]) {
 	/*** else If Child Process ***/
 	else{
 		while (true) {
-			int length = 3;
-			char dumchar[length+1];
+			Byte dumchar[2];
 			struct sockaddr_storage recAdrr;			// receiver adress
 			socklen_t recAdrrlen = sizeof(recAdrr);		
 		
+<<<<<<< HEAD
 			ssize_t numBytes = recvfrom(sockfd, dumchar, length, 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
+=======
+			numBytes = recvfrom(sockfd, dumchar, size0f(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
+>>>>>>> abe62db515dede06542c4e3f8250369648b90386
 			if (numBytes < 0) cout << "receive failed \n";
 			else if (dumchar[0] == XON){
 				cout << "XON diterima\n";
