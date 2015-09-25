@@ -35,7 +35,7 @@ int sockfd; // listen on sock_fd
 
 struct sockaddr_storage dmy;
 socklen_t dmylen = sizeof (dmy);
-using namespace std;
+
 int main(int argc, char *argv[]) {
 
 	// Mengecek argumen
@@ -112,9 +112,7 @@ int main(int argc, char *argv[]) {
 			struct sockaddr_storage recAdrr;			// receiver adress
 			socklen_t recAdrrlen = sizeof(recAdrr);		
 		
-			ssize_t numBytes = recvfrom(sockfd, dumchar, length, 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
-
-			numBytes = recvfrom(sockfd, dumchar, size0f(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
+			ssize_t numBytes = recvfrom(sockfd, dumchar, sizeof(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
 
 			if (numBytes < 0) cout << "receive failed \n";
 			else if (dumchar[0] == XON){
