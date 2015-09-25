@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 			char ch;
 			int i = 0;
 			ifstream file(argv[3]);
-			if ( !the_file.is_open() ) {
+			if ( !file.is_open() ) {
 				cout<<"Could not open file\n";
 				return 0;
 			}
