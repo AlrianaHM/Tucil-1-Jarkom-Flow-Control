@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
 	    				else {
 	    					i++;
 	    					cout << "Mengirim byte ke-" << i << ": '" << ch << "'" << endl;
+	    					fflush(stdout);
 	    				}
 	    			} else cout << "Menunggu XON...\n";
 			}
