@@ -18,7 +18,6 @@ Author 	: Ignatius Alriana Haryadi Moel
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
-#include <string.h>
 
 using namespace std;
 
@@ -93,7 +92,7 @@ int main(int argc, char *argv[]) {
 			// Menbaca File yang akan dikirim
 			char *ch;
 			int i = 0;
-			fstream fin(filename, fstream::in);
+			fstream fin(filename.c_str(), fstream::in);
 			while (fin >> noskipws >> ch) {
 				if (sent_xonxoff == XON){
 	    				size_t len = strlen(ch);
