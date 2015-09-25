@@ -42,13 +42,14 @@ socklen_t dmylen = sizeof (dmy);
 int main(int argc, char *argv[]) {
 
 	// Mengecek argumen
-	if(argc < 3 || argc > 4)
+	if(argc < 3 || argc > 4){
 			printf("transmitter [ip-address] [port-number] [file.txt]");
-
+			exit(1);
+	}
 	// memasukan argument ke dalam local data
-	char* ip_adr = argv[1];
-	char* port_num = argv[2];
-	string filename = argv[3];
+	const char* ip_adr = argv[1];
+	const char* port_num = argv[2];
+	const char* filename = argv[3];
 
 	//Constructing local socket address
 	
@@ -92,12 +93,12 @@ int main(int argc, char *argv[]) {
 			// Menbaca File yang akan dikirim
 			char ch;
 			int i = 0;
-			ifstream file(argv[3]);
-			if ( !file.is_open() ) {
+			FILE * fname = fopen(filename,"r")
+			if ( fname==NULL ) {
 				cout<<"Could not open file\n";
 				return 0;
 			}
-			while (file.get(ch)) {
+			while (fscanf(fname, "%c", &ch)!=EOF) {
 				if (sent_xonxoff == XON){
 	    				//size_t len = strlen(ch);
 	    				// Sending karakter/karakter
