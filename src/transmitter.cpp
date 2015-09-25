@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 			char *ch;
 			int i = 0;
 			fstream fin(filename, fstream::in);
-			while (fin >> noskipws >> ch) {
+			while (fin >> noskipws >> &ch) {
 				if (sent_xonxoff == XON){
 	    				size_t len = strlen(ch);
 	    				// Sending karakter/karakter
@@ -112,7 +112,11 @@ int main(int argc, char *argv[]) {
 			struct sockaddr_storage recAdrr;			// receiver adress
 			socklen_t recAdrrlen = sizeof(recAdrr);		
 		
+<<<<<<< HEAD
 			ssize_t numBytes = recvfrom(sockfd, dumchar, sizeof(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
+=======
+			numBytes = recvfrom(sockfd, dumchar, sizeof(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
+>>>>>>> 4d149209bc0b43a53bcd34b1279e49d174bd3811
 
 			if (numBytes < 0) cout << "receive failed \n";
 			else if (dumchar[0] == XON){
