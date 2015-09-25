@@ -17,7 +17,7 @@ Author 	: Ignatius Alriana Haryadi Moel
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
-#include <unistd.h>
+
 /* Delay to adjust speed of consuming uffer, in milliseconds */
 #define DELAY 500
 
@@ -115,11 +115,11 @@ int main(int argc, char *argv[]) {
 		
 			ssize_t numBytes = recvfrom(sockfd, dumchar, length, 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
 			if (numBytes < 0) cout << "receive failed \n";
-			else if (dumchar[0] == XON){
+			else if (dumchar == XON){
 				cout << "XON diterima\n";
 				send_xoff = false;
 				send_xon = true;
-			} else if (dumchar[0] == XOFF){
+			} else if (dumchar == XOFF){
 				cout << "XOFF diterima\n";
 				send_xoff = true;
 				send_xon = false;

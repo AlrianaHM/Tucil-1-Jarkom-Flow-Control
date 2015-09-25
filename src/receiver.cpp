@@ -8,6 +8,7 @@ Author : LCIA
 #include <string.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <pthread.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/uio.h>
@@ -36,6 +37,18 @@ static Byte *rcvchar(int sockfd, QTYPE *queue);
 static Byte *q_get(QTYPE *, Byte *);
 
 int count_consumed = 0; //menghitung karakter yang akan diambil dari buffer
+void* childprocess(void *threadArgs){
+		while (true) { 
+			/* Call q_get */ 
+				Byte Ce;
+				Byte * consumer = q_get(rxq,&Ce);
+				if (consumer != NULL){
+					printf("Mengkonsumsi byte ke-%d: %u\n",++count_consumed,(unsigned int)consumer );
+				}
+			/* Can introduce some delay here. */
+				sleep(1);
+		}
+	}
 
 int main(int argc, char *argv[]) {
 
@@ -81,39 +94,21 @@ int main(int argc, char *argv[]) {
 	/* Initialize XON/XOFF flags */
 	send_xon = true;
 	/* Create child process */
-	pid_t pid;
-	pid = fork();
-
+	pthread_t childt;
+	pthread_create(&childt,NULL,childprocess,NULL);
 
 	/*** If Parrent Process ***/
-	if (pid !=0){
-		while (true){
-			C = *(rcvchar(sockfd, rxq));
-			
-			/* Quit on end of file */
-			if (C == Endfile) {
-				exit(0);
-			}
+	while (true){
+		C = *(rcvchar(sockfd, rxq));
+		
+		/* Quit on end of file */
+		if (C == Endfile) {
+			exit(0);
 		}
 	}
-	
-	/*** else If Child Process ***/
-	else{
-		while (true) { 
-		/* Call q_get */ 
-			Byte * consumer = q_get(rxq,&C);
-			if (consumer != NULL){
-				printf("Mengkonsumsi byte ke-%d: %u\n",++count_consumed,(unsigned int)consumer );
-			}
-		/* Can introduce some delay here. */
-			sleep(1);
-		}
-	}
-	
-	close(sockfd);
 
-	return 0;
 }
+	
 
 int count_buffer=0; //pengkitung banyak elemen di dalam buffer
 
@@ -203,6 +198,4 @@ static Byte *q_get(QTYPE *queue, Byte *data) {
 		}
 		return data;
 	}
-
-
 }
