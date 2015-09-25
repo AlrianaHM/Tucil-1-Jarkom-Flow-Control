@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
 			int i = 0;
 			FILE * fname = fopen(filename,"r");
 			if ( fname==NULL ) {
-				cout<<"Could not open file\n";
+				printf("Could not open file\n");
 				exit(1);
 			}
 			while (fscanf(fname, "%c", &ch)!=EOF) {
@@ -104,13 +104,14 @@ int main(int argc, char *argv[]) {
 	    				//size_t len = strlen(ch);
 	    				// Sending karakter/karakter
 	    				ssize_t numBytes = sendto(sockfd, &ch, 1, 0,res->ai_addr, res->ai_addrlen);
-	    				if (numBytes < 0) cout << "sending failed\n" ;
+	    				if (numBytes < 0) printf("sending failed\n");//cout << "sending failed\n" ;
 	    				else {
 	    					i++;
-	    					cout << "Mengirim byte ke-" << i << ": '" << ch << "'" << endl;
+	    					printf("Mengirim byte ke-%d: '%c'\n",i,ch);
+	    					//cout << "Mengirim byte ke-" << i << ": '" << ch << "'" << endl;
 	    					fflush(stdout);
 	    				}
-	    			} else cout << "Menunggu XON...\n";
+	    			} else printf("Menunggu XON...\n");//cout << "Menunggu XON...\n";
 			}
 		}
 	}
@@ -124,13 +125,13 @@ int main(int argc, char *argv[]) {
 		
 			ssize_t numBytes = recvfrom(sockfd, dumchar, sizeof(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
 
-			if (numBytes < 0) cout << "receive failed \n";
+			if (numBytes < 0) printf("receive failed \n");//cout << "receive failed \n";
 			else if (dumchar[0] == XON){
-				cout << "XON diterima\n";
+				printf("XON diterima\n");//cout << "XON diterima\n";
 				send_xoff = false;
 				send_xon = true;
 			} else if (dumchar[0] == XOFF){
-				cout << "XOFF diterima\n";
+				printf("XOFF diterima\n");//cout << "XOFF diterima\n";
 				send_xoff = true;
 				send_xon = false;
 			}
