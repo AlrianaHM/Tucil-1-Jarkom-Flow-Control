@@ -92,8 +92,12 @@ int main(int argc, char *argv[]) {
 			// Menbaca File yang akan dikirim
 			char *ch;
 			int i = 0;
-			fstream fin(argv[3], fstream::in);
-			while (fin >> noskipws >> ch) {
+			ifstream file(argv[3]);
+			if ( !the_file.is_open() ) {
+				cout<<"Could not open file\n";
+				return 0;
+			}
+			while (file.get(ch)) {
 				if (sent_xonxoff == XON){
 	    				size_t len = strlen(ch);
 	    				// Sending karakter/karakter
