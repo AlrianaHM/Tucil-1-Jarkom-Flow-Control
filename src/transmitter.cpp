@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 			// Menbaca File yang akan dikirim
 			char ch;
 			int i = 0;
-			FILE * fname = fopen(filename,"r")
+			FILE * fname = fopen(filename,"r");
 			if ( fname==NULL ) {
 				cout<<"Could not open file\n";
 				return 0;
