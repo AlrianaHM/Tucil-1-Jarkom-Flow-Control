@@ -112,11 +112,9 @@ int main(int argc, char *argv[]) {
 			struct sockaddr_storage recAdrr;			// receiver adress
 			socklen_t recAdrrlen = sizeof(recAdrr);		
 		
-<<<<<<< HEAD
 			ssize_t numBytes = recvfrom(sockfd, dumchar, sizeof(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
-=======
+
 			numBytes = recvfrom(sockfd, dumchar, sizeof(dumchar), 0, (struct sockaddr *) &recAdrr, &recAdrrlen);
->>>>>>> 4d149209bc0b43a53bcd34b1279e49d174bd3811
 
 			if (numBytes < 0) cout << "receive failed \n";
 			else if (dumchar[0] == XON){
