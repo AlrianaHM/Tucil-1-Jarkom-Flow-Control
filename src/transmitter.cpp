@@ -18,6 +18,8 @@ Author 	: Ignatius Alriana Haryadi Moel
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
+#include <string.h>
+
 /* Delay to adjust speed of consuming uffer, in milliseconds */
 #define DELAY 500
 
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
 	// memasukan argument ke dalam local data
 	char* ip_adr = argv[1];
 	char* port_num = argv[2];
-	char* filename = argv[3];
+	string filename = argv[3];
 
 	//Constructing local socket address
 	
@@ -90,7 +92,7 @@ int main(int argc, char *argv[]) {
 			char *ch;
 			int i = 0;
 			fstream fin(filename, fstream::in);
-			while (fin >> noskipws >> &ch) {
+			while (fin >> noskipws >> ch) {
 				if (sent_xonxoff == XON){
 	    				size_t len = strlen(ch);
 	    				// Sending karakter/karakter
