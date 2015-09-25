@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 				if (sent_xonxoff == XON){
 	    			
 	    			// Sending karakter/karakter
-	    			ssize_t numBytes = sendto(sockfd, ch, 1, 0,res->ai_addr, res->ai_addrlen);
+	    			ssize_t numBytes = sendto(sockfd, &ch, 1, 0,res->ai_addr, res->ai_addrlen);
 	    			if (numBytes < 0) cout << "sending failed\n" ;
 	    			else {
 	    				i++;
