@@ -92,16 +92,15 @@ int main(int argc, char *argv[]) {
 			fstream fin(filename, fstream::in);
 			while (fin >> noskipws >> ch) {
 				if (sent_xonxoff == XON){
-	    			size_t len = strlen(ch);
-	    			// Sending karakter/karakter
-	    			ssize_t numBytes = sendto(sockfd, ch, len, 0,res->ai_addr, res->ai_addrlen);
-	    			if (numBytes < 0) cout << "sending failed\n" ;
-	    			else {
-	    				i++;
-	    				cout << "Mengirim byte ke-"<< i <<": '"<< ch << "'\n";
-	    			}
-
-	    		} else cout << "Menunggu XON...\n";
+	    				size_t len = strlen(ch);
+	    				// Sending karakter/karakter
+	    				ssize_t numBytes = sendto(sockfd, ch, len, 0,res->ai_addr, res->ai_addrlen);
+	    				if (numBytes < 0) cout << "sending failed\n" ;
+	    				else {
+	    					i++;
+	    					cout << "Mengirim byte ke-"<< i <<": '"<< &ch << "'\n";
+	    				}
+	    			} else cout << "Menunggu XON...\n";
 			}
 		}
 	}
