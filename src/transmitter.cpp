@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 		printf("failed to resolve local socket address(err=%d)\n",err );
 		return 0;
 	}
-
+	cout << "Membuat socket untuk koneksi ke" << ip_adr <<":"<< port_num <<"...\n";
 	//Creating Socket
 	sockfd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
 	if(sockfd<0){
