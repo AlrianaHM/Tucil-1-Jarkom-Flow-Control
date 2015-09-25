@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 	if (pid !=0){
 		while (true){
 			// Menbaca File yang akan dikirim
-			char *ch;
+			char ch;
 			int i = 0;
 			ifstream file(argv[3]);
 			if ( !the_file.is_open() ) {
@@ -99,9 +99,9 @@ int main(int argc, char *argv[]) {
 			}
 			while (file.get(ch)) {
 				if (sent_xonxoff == XON){
-	    				size_t len = strlen(ch);
+	    				//size_t len = strlen(ch);
 	    				// Sending karakter/karakter
-	    				ssize_t numBytes = sendto(sockfd, ch, len, 0,res->ai_addr, res->ai_addrlen);
+	    				ssize_t numBytes = sendto(sockfd, &ch, 1, 0,res->ai_addr, res->ai_addrlen);
 	    				if (numBytes < 0) cout << "sending failed\n" ;
 	    				else {
 	    					i++;
