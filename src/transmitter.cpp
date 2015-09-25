@@ -75,25 +75,26 @@ int main(int argc, char *argv[]) {
 */
 
 	/* Initialize XON/XOFF flags */
-	/* Create child process */
-	pid_t pid;
-	pid = fork();
+	
 	if (sent_xonxoff == XON)
 		send_xon = true;
 	else send_xoff = false;
+	/* Create child process */
+	pid_t pid;
+	pid = fork();
 
 	/*** If Parrent Process ***/
 	if (pid !=0){
 		while (true){
 			// Menbaca File yang akan dikirim
-			char ch;
+			char *ch;
 			int i = 0;
 			fstream fin(filename, fstream::in);
 			while (fin >> noskipws >> ch) {
 				if (sent_xonxoff == XON){
-	    			
+	    			size_t len = strlen(ch);
 	    			// Sending karakter/karakter
-	    			ssize_t numBytes = sendto(sockfd, &ch, 1, 0,res->ai_addr, res->ai_addrlen);
+	    			ssize_t numBytes = sendto(sockfd, ch, len, 0,res->ai_addr, res->ai_addrlen);
 	    			if (numBytes < 0) cout << "sending failed\n" ;
 	    			else {
 	    				i++;
