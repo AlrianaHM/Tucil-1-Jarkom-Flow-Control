@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
 	    				if (numBytes < 0) cout << "sending failed\n" ;
 	    				else {
 	    					i++;
-	    					cout << "Mengirim byte ke-"<< i <<": '"<< &ch << "'\n";
+	    					cout << "Mengirim byte ke-"<< i <<": '"<< ch << "'\n";
 	    				}
 	    			} else cout << "Menunggu XON...\n";
 			}
