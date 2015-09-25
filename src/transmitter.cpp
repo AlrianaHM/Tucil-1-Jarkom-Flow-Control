@@ -20,6 +20,8 @@ Author 	: Ignatius Alriana Haryadi Moel
 #include <unistd.h>
 #include <string.h>
 
+using namespace std;
+
 /* Delay to adjust speed of consuming uffer, in milliseconds */
 #define DELAY 500
 
